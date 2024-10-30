@@ -7,8 +7,10 @@ const anecdotesAtStart = [
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
 
+// generate a random id
 const getId = () => (100000 * Math.random()).toFixed(0)
 
+// create anecdote as Object
 const asObject = (anecdote) => {
   return {
     content: anecdote,
@@ -19,11 +21,49 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
-const reducer = (state = initialState, action) => {
-  console.log('state now: ', state)
-  console.log('action', action)
+// executes the logic based on the type of the action to modify the component's state
+export const reducer = (state = initialState, action) => {
+  switch(action.type) {
+    case 'NEW_ANECDOTE':
+      console.log('NEW_ANCEDOTE >> ', action.payload)
+      state = state.concat(action.payload)
+      return state
 
-  return state
+    case 'ADD_VOTE':
+      const id = action.payload.id
+      const votedAnecdote = state.find(anecdote => anecdote.id === id)
+      const changedAnecdote = {
+        ...votedAnecdote,
+        id: id,
+        votes: votedAnecdote.votes + 1
+      }
+      
+      state = state.map(anecdote => 
+        anecdote.id !== id ? anecdote : changedAnecdote
+      )
+      state = state.sort((a,b) => b.votes - a.votes )
+      return state
+
+    default: 
+      console.log('state >> ', state)
+      return state
+  }
+
+}
+
+export const createAnecdote = (content) => {
+  return {
+    type: 'NEW_ANECDOTE',
+    payload: asObject(content)
+  }
+}
+
+export const addVote = (id) => {
+  console.log('addVote >> ', id)
+  return {
+    type: 'ADD_VOTE',
+    payload: { id }
+  }
 }
 
 export default reducer
