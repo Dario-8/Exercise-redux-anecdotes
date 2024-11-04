@@ -22,7 +22,7 @@ const asObject = (anecdote) => {
 const initialState = anecdotesAtStart.map(asObject)
 
 // executes the logic based on the type of the action to modify the component's state
-export const reducer = (state = initialState, action) => {
+export const anecdoteReducer = (state = initialState, action) => {
   switch(action.type) {
     case 'NEW_ANECDOTE':
       state = state.concat(action.payload)
@@ -62,4 +62,4 @@ export const addVote = (id) => {
   }
 }
 
-export default reducer
+export default anecdoteReducer
